@@ -40,9 +40,9 @@ ActivateRoblox() {
         Sleep(500)
         UpdateText("Roblox is not open or you have Microsoft Store Roblox")
     } else {
-        WinGetPos(&X, &Y, &W, &H, MacroUI)
+        WinGetPos(&X, &Y, &W, &H, MainUI)
         WinActivate(roblox)
-        WinMove(X-5, Y, 800, 600, roblox)
+        WinMove(X, Y, 800, 600, roblox)
         return true
     }
 }
@@ -157,7 +157,7 @@ ImageSearchLoop(image, X1, Y1, X2, Y2) {
 
 PixelSearchS(color, x1, y1, x2, y2, variation, v := true) {
     global foundX, foundY
-    ActivateRoblox
+    ActivateRoblox()
     if PixelSearch(&foundX, &foundY, x1, y1, x2, y2, color, variation) {
         if v {
             return [foundX, foundY]
