@@ -6,7 +6,6 @@ global MainUI
 global Process
 global StatusHistory := []
 global MacroUI := "Goon AFS Macro"
-global Version := "v0.1.3.3"
 global MapsGui := ""
 global ModifiersGui := ""
 global CurrentPage := 1
@@ -16,8 +15,12 @@ global PrevBtn := ""
 global NextBtn := ""
 global TierGui := ""
 global ModifiersGui := ""
-
 global PortalType := ""
+
+;Update Checker
+global repoOwner := "sawnek"
+global repoName := "Goon-AFS-Macro"
+global Version := "v1.4.0"
 
 LoadColorSettings() {
     colorFile := A_ScriptDir "\Settings\Colors.txt"
@@ -102,16 +105,16 @@ MainUI.BackColor := bgColor
 MainUI.SetFont("s10 bold", "Segoe UI")
 DragWindow := MainUI.Add("Text", "x0 y0 w1000 h25 " accentColor)
 DragWindow.OnEvent("Click", (*) => DragWindowFunc())
-CloseButton := MainUI.Add("Picture", "x1260 y0 w25 H25", XBUTTON)
+CloseButton := MainUI.Add("Picture", "x1260 y5 w25 H25", XBUTTON)
 CloseButton.OnEvent("Click", (*) => ExitApp())
-MinimizeButton := MainUI.Add("Picture", "x1220 y0 w25 h25", Minimize)
+MinimizeButton := MainUI.Add("Picture", "x1220 y5 w25 h25", Minimize)
 MinimizeButton.OnEvent("Click", (*) => WinMinimize())
 
 DragWindowFunc() {
     PostMessage(0xA1, 2)
     Sleep 1
     if WinExist(roblox) {
-        WinGetPos(&X, &Y, &W, &H, MacroUI)
+        WinGetPos(&X, &Y, &W, &H, MainUI)
         WinActivate(roblox)
         WinMove(X, Y, 800, 600, roblox)
     }
@@ -122,33 +125,33 @@ WinSetTransColor("0x603b3b 255", MainUI)
 MainUI.SetFont("s12 bold")
 MainUI.Add("Text", "x850 y670 w80 c" textcolor " BackgroundTrans", "Mode:")
 MainUI.SetFont("s10")
-global ModeSelect := MainUI.Add("DropDownList", "x930 y670 w150 vSelectedMode Choose1 Background" buttonBgColor " c" textcolor,
+global ModeSelect := MainUI.Add("DropDownList", "x920 y670 w150 vSelectedMode Choose1 Background" buttonBgColor " c" textcolor,
     ["", "Story", "Infinite", "Legend", "Raid", "Inferno", "Custom"])
 
-global CustomModeSelect := MainUI.Add("DropDownList", "x930 y700 w150 vSelectedCustomMode Background" buttonBgColor " c" textcolor " Hidden")
+global CustomModeSelect := MainUI.Add("DropDownList", "x920 y700 w150 vSelectedCustomMode Background" buttonBgColor " c" textcolor " Hidden")
 
-global WorldSelect := MainUI.Add("DropDownList", "x930 y695 w150 vWorldSelect Background" buttonBgColor " c" textcolor " Hidden", 
+global WorldSelect := MainUI.Add("DropDownList", "x920 y700 w150 vWorldSelect Background" buttonBgColor " c" textcolor " Hidden", 
     ["", "Clown Town", "Alien Island", "Sand Village", "Demon Winter", "Huco Mondo", "Asakusa Flame"])
 WorldSelect.OnEvent("Change", (*) => SetTimer(() => LoadModeSettings(), -100))
 
-global LegendSelect := MainUI.Add("DropDownList", "x930 y695 w150 vLegendSelect Background" buttonBgColor " c" textcolor " Hidden", 
+global LegendSelect := MainUI.Add("DropDownList", "x920 y700 w150 vLegendSelect Background" buttonBgColor " c" textcolor " Hidden", 
     ["", "Alien Island", "Demon Winter", "Huco Mondo", "Asakusa Flame"])
 LegendSelect.OnEvent("Change", (*) => SetTimer(() => LoadModeSettings(), -100))
 
-global RaidSelect := MainUI.Add("DropDownList", "x930 y695 w150 vRaidSelect Background" buttonBgColor " c" textcolor " Hidden", 
+global RaidSelect := MainUI.Add("DropDownList", "x920 y700 w150 vRaidSelect Background" buttonBgColor " c" textcolor " Hidden", 
     ["", "Emies Lobby", "Nature Village"])
 RaidSelect.OnEvent("Change", (*) => SetTimer(() => LoadModeSettings(), -100))
 
-global ActSelect := MainUI.Add("DropDownList", "x930 y720 w150 vActSelect Background" buttonBgColor " c" textcolor " Hidden", 
+global ActSelect := MainUI.Add("DropDownList", "x920 y730 w150 vActSelect Background" buttonBgColor " c" textcolor " Hidden", 
     ["", "Act 1", "Act 2", "Act 3", "Act 4", "Act 5", "Act 6"])
 
-global LegendActSelect := MainUI.Add("DropDownList", "x930 y720 w150 vLegendActSelect Background" buttonBgColor " c" textcolor " Hidden", 
+global LegendActSelect := MainUI.Add("DropDownList", "x920 y730 w150 vLegendActSelect Background" buttonBgColor " c" textcolor " Hidden", 
     ["", "Act 1", "Act 2", "Act 3"])
 
-global RaidActSelect := MainUI.Add("DropDownList", "x930 y720 w150 vRaidActSelect Background" buttonBgColor " c" textcolor " Hidden", 
+global RaidActSelect := MainUI.Add("DropDownList", "x920 y730 w150 vRaidActSelect Background" buttonBgColor " c" textcolor " Hidden", 
     ["", "Act 1", "Act 2", "Act 3", "Act 4"])
 
-global NightmareToggle := MainUI.Add("Checkbox", "x1120 y698 w100 Checked c" textcolor " Hidden" " vNightmareToggle", "Nightmare")
+global NightmareToggle := MainUI.Add("Checkbox", "x1090 y703 w100 Checked c" textcolor " Hidden" " vNightmareToggle", "Nightmare")
 
 global CustomModeEdit := MainUI.Add("Edit", "x1090 y670 w100 vCustomModeEdit Hidden", "")
 global CustomModeCreateBtn := MainUI.Add("Button", "x1200 y670 w60 h25 c" textcolor " Background" buttonBgColor " Hidden",
@@ -157,9 +160,9 @@ global CustomModeCreateBtn := MainUI.Add("Button", "x1200 y670 w60 h25 c" textco
 ; global GameSpeedSelect := MainUI.Add("DropDownList", "x1225 y719 w60 vGameSpeed Choose3 Background" buttonBgColor " c" textcolor,
 ;     ["1x", "2x", "3x"])
 
-global AutoAbility := MainUI.Add("Checkbox", "x1120 y722 w100 Checked c" textcolor " vAutoAbility", "Auto Ability")
+global AutoAbility := MainUI.Add("Checkbox", "x1090 y733 w100 Checked c" textcolor " Hidden " " vAutoAbility", "Auto Ability")
 
-global Wave15Toggle := MainUI.Add("Checkbox", "x1120 y673 w100 Checked c" textcolor " Hidden" " vWave15Toggle", "Wave 15")
+global Wave15Toggle := MainUI.Add("Checkbox", "x1090 y703 w100 Checked c" textcolor " Hidden" " vWave15Toggle", "Wave 15")
 
 ; Only set up the event once, and remove duplicate OnEvent
 ModeSelect.OnEvent("Change", ModeSelectChanged)
@@ -172,7 +175,7 @@ GetMode() {
 ModeSelectChanged(*) {
     mode := ModeSelect.Text
 
-    ; Hide all controls by default
+    ; Hidden controls on switch
     NightmareToggle.Visible := false
     Wave15Toggle.Visible := false
     ; GameSpeedSelect.Visible := false
@@ -185,6 +188,13 @@ ModeSelectChanged(*) {
     LegendActSelect.Visible := false
     RaidSelect.Visible := false
     RaidActSelect.Visible := false
+    ; Visible controls on switch
+    if !(mode = "") {
+    AutoAbility.Visible := true
+    } else {
+        AutoAbility.Visible := false
+    }
+
 
     switch mode {
         case "Custom":
@@ -278,7 +288,7 @@ LoadGameModeSettings(*) {
         return false
     }
 
-    MainUI.Show("w1300 h750")
+    MainUI.Show("w1300 h775")
     return true
 }
 MainUI.SetFont("s14 bold")
@@ -368,33 +378,33 @@ Save.OnEvent("Click", (*) => SaveSettings())
 
 MainUI.SetFont("s13 bold")
 MainUI.Add("Text", "x95 y632 w300 h120 c" textcolor " BackgroundTrans", "Process:")
-MainUI.Add("Text", "x355 y632 w198 h20 c" textcolor " BackgroundTrans", "Settings:")
+MainUI.Add("Text", "x362 y632 w198 h21 c" textcolor " BackgroundTrans", "Settings:")
 MainUI.Add("Text", "x600 y632 w300 h120 c" textcolor " BackgroundTrans", "Webhook:")
 MainUI.SetFont("s10")
 
-Process := MainUI.Add("Text", "x20 y660 w218 h100 c" textcolor " BackgroundTrans", "Press F1 to start the macro")
+Process := MainUI.Add("Text", "x20 y660 w250 h105 c" textcolor " BackgroundTrans", "Press F1 to start the macro")
 
-MainUI.Add("Text", "x0 y628 w13500 h5 Background" borderColor)       ; Top border thickened
+MainUI.Add("Text", "x0 y628 w13500 h3 Background" borderColor)       ; Top border thickened
 MainUI.Add("Text", "x0 y628 w5 h125 Background" borderColor)       ; Left vertical
-MainUI.Add("Text", "x0 y746 w1300 h5 Background" borderColor)      ; Bottom border
-MainUI.Add("Text", "x280 y630 w5 h120 Background" borderColor)     ; Middle vertical 1
-MainUI.Add("Text", "x514 y630 w5 h120 Background" borderColor)     ; Middle vertical 2
-MainUI.Add("Text", "x0 y655 w1350 h5 Background" borderColor)      ; Horizontal inside
-MainUI.Add("Text", "x800 y0 w5 h750 Background" borderColor)       ; Vertical right of middle
+MainUI.Add("Text", "x0 y770 w1300 h5 Background" borderColor)      ; Bottom border
+MainUI.Add("Text", "x280 y630 w3 h170 Background" borderColor)     ; Middle vertical 1
+MainUI.Add("Text", "x514 y630 w3 h170 Background" borderColor)     ; Middle vertical 2
+MainUI.Add("Text", "x0 y655 w1350 h3 Background" borderColor)      ; Horizontal inside
+MainUI.Add("Text", "x805 y0 w3 h770 Background" borderColor)       ; Vertical right of middle
 MainUI.Add("Text", "x0 y0 w1350 h5 Background" borderColor)        ; Very top border
-MainUI.Add("Text", "x0 y0 w5 h750 Background" borderColor)         ; Very left border
-MainUI.Add("Text", "x1295 y0 w5 h750 Background" borderColor)      ; Very right border
-MainUI.Add("Text", "x5 y30 w1350 h5 Background" borderColor)       ; Header separator
+MainUI.Add("Text", "x0 y0 w5 h770 Background" borderColor)         ; Very left border
+MainUI.Add("Text", "x1295 y0 w5 h770 Background" borderColor)      ; Very right border
+MainUI.Add("Text", "x5 y30 w1350 h3 Background" borderColor)       ; Header separator
 ;MainUI.Add("Text", "x5 y30 w3 h600 Background" borderColor)        ; Header left vertical
 
 MainUI.SetFont("s9")
-MainUI.Add("Text", "x520 y665 w80 BackgroundTrans c" textcolor, "Enable:")
-WebhookCheckbox := MainUI.Add("Checkbox", "x600 y665 vEnableWebhook")
-TestWebhook := MainUI.Add("Button", "x640 y662 w60 h20 c" textcolor " Background" buttonBgColor, "Test")
-MainUI.Add("Text", "x520 y690 w80 BackgroundTrans c" textcolor, "URL:")
-WebhookEdit := MainUI.Add("Edit", "x600 y687 w150 vMyEdit Background" buttonBgColor " c" textcolor)
-MainUI.Add("Text", "x520 y715 w80 BackgroundTrans c" textcolor, "Discord ID:")
-DiscordIdEdit := MainUI.Add("Edit", "x600 y712 w150 vDiscordIdEdit Background" buttonBgColor " c" textcolor)
+MainUI.Add("Text", "x535 y680 w80 BackgroundTrans c" textcolor, "Enable:")
+WebhookCheckbox := MainUI.Add("Checkbox", "x615 y680 vEnableWebhook")
+TestWebhook := MainUI.Add("Button", "x655 y677 w60 h20 c" textcolor " Background" buttonBgColor, "Test")
+MainUI.Add("Text", "x535 y705 w80 BackgroundTrans c" textcolor, "URL:")
+WebhookEdit := MainUI.Add("Edit", "x615 y702 w150 vMyEdit Background" buttonBgColor " c" textcolor)
+MainUI.Add("Text", "x535 y730 w80 BackgroundTrans c" textcolor, "Discord ID:")
+DiscordIdEdit := MainUI.Add("Edit", "x615 y727 w150 vDiscordIdEdit Background" buttonBgColor " c" textcolor)
 
 TestWebhook.OnEvent("Click", (*) => TestWebhookFunc())
 
@@ -438,6 +448,7 @@ UpdateText(text) {
         }
     }
 }
+
 ShowMapsGui() {
     global MapsGui, Map1Checkbox, Map2Checkbox, Map3Checkbox, Map4Checkbox, Map5Checkbox, bgColor, textcolor,
         accentColor,
@@ -639,8 +650,8 @@ LoadModifierExclusionStates() {
     }
 }
 
-MainUI.Add("Text", "x12 y3 w800 +BackgroundTrans c" textcolor, "Goon AFS " Version)
-MainUI.Show("w1300 h750")
+MainUI.Add("Text", "x12 y5 w800 +BackgroundTrans c" textcolor, "Goon AFS " Version)
+MainUI.Show("w1300 h775")
 LOADWEBHOOKK() {
     webhookFile := A_ScriptDir "\Settings\Webhook.txt"
     if (FileExist(webhookFile)) {
@@ -1118,7 +1129,7 @@ LoadModeSettings(*) {
         }
     }
 
-    MainUI.Show("w1300 h750")
+    MainUI.Show("w1300 h775")
     return true
 }
 
@@ -1265,7 +1276,7 @@ SelectCords(index, *) {
     }
 
     imageGui.OnEvent("Close", (*) => (imageGui.Destroy(), isGuiOpen := false))
-    WinGetPos(&x, &y, &w, &h, MacroUI)
+    WinGetPos(&x, &y, &w, &h, roblox)
     imageGui.Show("x" x " y" y " w800 h600")
 
     KeyWait "RButton", "D"
@@ -1424,17 +1435,17 @@ PasteSettings(*) {
 }
 
 MainUI.SetFont("s10 bold")
-MainUI.Add("Text", "x290 y665 w80 BackgroundTrans c" textcolor, "Start:")
-StartHotkey := MainUI.Add("Hotkey", "x340 y662 w20 vStartHotkey", "F1")
+MainUI.Add("Text", "x302 y668 w80 BackgroundTrans c" textcolor, "Start:")
+StartHotkey := MainUI.Add("Hotkey", "x342 y665 w21 h22 vStartHotkey", "F1")
 
-MainUI.Add("Text", "x290 y690 w80 BackgroundTrans c" textcolor, "Pause:")
-PauseHotkey := MainUI.Add("Hotkey", "x340 y687 w20 vPauseHotkey", "F2")
+MainUI.Add("Text", "x420 y668 w80 BackgroundTrans c" textcolor, "Pause:")
+PauseHotkey := MainUI.Add("Hotkey", "x469 y665 w21 h22 vPauseHotkey", "F2")
 
-MainUI.Add("Text", "x290 y715 w80 BackgroundTrans c" textcolor, "Stop:")
-StopHotkey := MainUI.Add("Hotkey", "x340 y712 w20 vStopHotkey", "F3")
+MainUI.Add("Text", "x302 y694 w80 BackgroundTrans c" textcolor, "Stop:")
+StopHotkey := MainUI.Add("Hotkey", "x342 y693 w21 h22 vStopHotkey", "F3")
 
-MainUI.Add("Text", "x380 y665 w80 BackgroundTrans c" textcolor, "Zoomtech:")
-global SaveImageHotkey := MainUI.Add("Hotkey", "x450 y662 w20 vSaveImageHotkey", "F4")
+MainUI.Add("Text", "x420 y694 w80 BackgroundTrans c" textcolor, "Zoom:")
+global SaveImageHotkey := MainUI.Add("Hotkey", "x469 y693 w21 h22 vSaveImageHotkey", "F4")
 
 MainUI.SetFont("s13 bold")
 
@@ -1538,6 +1549,7 @@ StopMacro(*) {
 
 CreateDirectories()
 LoadKeybinds()
+CheckForUpdates()
 
 PreviousPage(*) {
     global CurrentPage, PrevBtn, NextBtn, PageDisplay
@@ -1710,7 +1722,7 @@ if !DirExist(A_ScriptDir "\Settings\Customs") {
     DirCreate(A_ScriptDir "\Settings\Customs")
     UpdateText("Customs directory created")
 }
-PrivateServerBtn := MainUI.Add("Button", "x370 y700 w120 h30 Background" buttonBgColor " c" textcolor,
+PrivateServerBtn := MainUI.Add("Button", "x340 y730 w120 h30 Background" buttonBgColor " c" textcolor,
     "Private Server")
 PrivateServerBtn.OnEvent("Click", (*) => PrivateServerGUI())
 PrivateServerGUI() {

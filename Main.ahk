@@ -6,6 +6,7 @@
 #Include Other\RapidOcr\RapidOcr.ahk
 #Include Other\Func.ahk
 #Include Other\ModeFuncs.ahk
+#Include Other\UpdateChecker.ahk
 #SingleInstance Force
 dllPath := A_ScriptDir '\\Other\\RapidOcr\\' (A_PtrSize * 8) 'bit\\RapidOcrOnnx.dll'
 global s := RapidOcr({ models: A_ScriptDir "\\Other\\RapidOcr\\models" }, dllPath)
