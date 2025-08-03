@@ -20,7 +20,7 @@ global PortalType := ""
 ;Update Checker
 global repoOwner := "sawnek"
 global repoName := "Goon-AFS-Macro"
-global Version := "v1.4.0"
+global Version := "v1.3.4"
 
 LoadColorSettings() {
     colorFile := A_ScriptDir "\Settings\Colors.txt"
