@@ -46,6 +46,9 @@ PlayAreaMovement() {
             return true
         } else {
             UpdateText("UI not found, retrying...")
+            if !DisconnectCheck() {
+                return false
+            }
             Sleep(500)
         }
     }
@@ -69,6 +72,9 @@ RaidAreaMovement() {
             return true
         } else {
             UpdateText("UI not found, retrying...")
+            if !DisconnectCheck() {
+                return false
+            }
             Sleep(500)
         }
     }
@@ -102,6 +108,9 @@ InfernoAreaMovement() {
             return true
         } else {
             UpdateText("UI not found, retrying...")
+            if !DisconnectCheck() {
+                return false
+            }
             TeleportTo("Summon")
             start := A_TickCount
             Sleep(500)
@@ -257,7 +266,11 @@ Inferno() {
     UpdateText("Starting Inferno")
 
     ; Start Amaterasa
-    ClickV2(300, 275)
+    if NightmareToggle.Value {
+        ClickV2(500, 275)
+    } else {
+        ClickV2(300, 275)
+    }
     Sleep(500)
     ; Right side start
     ClickV2(603, 421)
@@ -266,6 +279,15 @@ Inferno() {
     Sleep(500)
 
     LookForIngame(true)
+    ; In stage movement
+    Send '{shift down}{a down}'
+    Sleep(3250)
+    Send '{shift up}{a up}'
+    Sleep(150)
+    Send '{shift up}{s down}'
+    Sleep(850)
+    Send '{shift up}{s up}'
+    Sleep(150)
     ; ChangeGameSpeed()
     PlaceInOrder()
 }
