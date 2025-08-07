@@ -1,38 +1,38 @@
 Index=1
 Unit=3
 Upgrade=0
-X=278
-Y=381
+X=244
+Y=389
 
 Index=2
 Unit=3
 Upgrade=0
-X=249
-Y=379
+X=278
+Y=390
 
 Index=3
 Unit=1
 Upgrade=0
-X=433
-Y=235
+X=383
+Y=191
 
 Index=4
-Unit=2
+Unit=5
 Upgrade=0
-X=290
-Y=227
+X=268
+Y=427
 
 Index=5
-Unit=6
+Unit=f
 Upgrade=0
-X=388
-Y=205
+X=705
+Y=452
 
 Index=6
-Unit=6
+Unit=u4
 Upgrade=0
-X=312
-Y=197
+X=745
+Y=315
 
 Index=7
 Unit=f
@@ -41,88 +41,88 @@ X=705
 Y=452
 
 Index=8
-Unit=u2
-Upgrade=0
-X=745
-Y=200
+Unit=0
+Upgrade=MAX
+X=383
+Y=191
 
 Index=9
-Unit=u3
+Unit=
 Upgrade=0
-X=670
-Y=315
+X=
+Y=
 
 Index=10
-Unit=u3
+Unit=
 Upgrade=0
-X=670
-Y=315
+X=
+Y=
 
 Index=11
-Unit=u4
+Unit=
 Upgrade=0
-X=745
-Y=315
+X=
+Y=
 
 Index=12
-Unit=u4
+Unit=
 Upgrade=0
-X=745
-Y=315
+X=
+Y=
 
 Index=13
-Unit=u5
+Unit=
 Upgrade=0
-X=670
-Y=430
+X=
+Y=
 
 Index=14
-Unit=u5
+Unit=
 Upgrade=0
-X=670
-Y=430
+X=
+Y=
 
 Index=15
-Unit=u6
+Unit=
 Upgrade=0
-X=745
-Y=430
+X=
+Y=
 
 Index=16
-Unit=u6
+Unit=
 Upgrade=0
-X=745
-Y=430
+X=
+Y=
 
 Index=17
-Unit=f
+Unit=
 Upgrade=0
-X=705
-Y=452
+X=
+Y=
 
 Index=18
-Unit=4
-Upgrade=MAX
-X=372
-Y=253
+Unit=
+Upgrade=0
+X=
+Y=
 
 Index=19
-Unit=6
-Upgrade=MAX
-X=422
-Y=262
+Unit=
+Upgrade=0
+X=
+Y=
 
 Index=20
-Unit=2
-Upgrade=MAX
-X=288
-Y=241
+Unit=
+Upgrade=0
+X=
+Y=
 
 Index=21
-Unit=2
-Upgrade=MAX
-X=249
-Y=252
+Unit=
+Upgrade=0
+X=
+Y=
 
 Index=22
 Unit=
