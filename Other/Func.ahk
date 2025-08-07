@@ -42,7 +42,7 @@ ActivateRoblox() {
     } else {
         WinGetPos(&X, &Y, &W, &H, MainUI)
         WinActivate(roblox)
-        WinMove(X, Y, 800, 600, roblox)
+        WinMove(X-2, Y, 800, 600, roblox)
         return true
     }
 }
@@ -647,35 +647,36 @@ PlaceInOrder() {
 
                 UpdateText("Placing unit " unit " at (" xi ", " yi ") - Upgrade: " upgrade)
                 if !PlaceAndUpgradeUnit(xi, yi, unit, upgrade, 200)
-                    return false
+                    continue
             }
         }
     }
     return Retrycheckloop()
 }
 
-PlaceAndUpgradeUnit(x, y, unitslot, upgradeLevel := 0, upgradeDelay := 200) {
+PlaceAndUpgradeUnit(x, y, unitSlot, upgradeLevel := 0, upgradeDelay := 200) {
 
-    if !PlaceUnit(x, y, unitslot) {
-        UpdateText("Failed to place unit: " unitslot)
+    if !PlaceUnit(x, y, unitSlot) {
+        UpdateText("Failed to place unit: " unitSlot)
         return false
     }
 
     Sleep(100)  ; Give the UI a short moment to settle
 
     if (upgradeLevel != "" && upgradeLevel != "0" && upgradeLevel != 0) {
-        if !UpgradeUnit(x, y, upgradeLevel, upgradeDelay, unitslot) {
+        if !UpgradeUnit(x, y, upgradeLevel, upgradeDelay, unitSlot) {
             UpdateText("Upgrade failed or timed out")
             return false
         }
     }
 
-    UpdateText("Unit " unitslot . " placed and upgraded to " upgradeLevel . " successfully.")
+    UpdateText("Unit " unitSlot . " placed and upgraded to " upgradeLevel . " successfully.")
     return true
 }
 
-UpgradeUnit(x, y, upgradeLevel, upgradeDelay, unitslot := "") {
+UpgradeUnit(x, y, upgradeLevel, upgradeDelay, unitSlot := "") {
     hasClicked := false
+    timeout := A_TickCount
 
     if (upgradeLevel = 0) {
         return true
@@ -703,10 +704,17 @@ UpgradeUnit(x, y, upgradeLevel, upgradeDelay, unitslot := "") {
             AutoAbilityCheck()
 
             WinGetPos(&winX, &winY, &winW, &winH, roblox)
-            if (FindText(&foundX, &foundY, winX, winY, winW, winH, 0, 0, MaxUnit)) {
+            FindText().WindowToScreen(&outX, &outY, winX, winY, WinExist(roblox))
+            searchW := 120
+            searchH := 40
+
+            if FindText(&foundX, &foundY, outX+115, outY+380, searchW, searchH, 0, 0, MaxUnit) {
                 Sleep(100)
                 hasClicked := false
                 return true
+            }
+            else if (A_TickCount - timeout > 60000) {
+                return false
             }
         }
     }
@@ -730,16 +738,28 @@ UpgradeUnit(x, y, upgradeLevel, upgradeDelay, unitslot := "") {
         AutoAbilityCheck()
 
         WinGetPos(&winX, &winY, &winW, &winH, roblox)
-        selectedUpgrade := FindText(&foundX, &foundY, winX+135, winY+325, winW+45, winH-45, 0.1, 0.1, upgradePattern)
-        maxUpgrade := FindText(&foundX, &foundY, winX, winY, winW, winH, 0, 0, MaxUnit)
-        ; FindText() show search range function
-        ;FindText().RangeTip(winX+115, winY+380, winW-700, winH-600, "Red", 2)
+        FindText().WindowToScreen(&outX, &outY, winX, winY, WinExist(roblox))
 
-        if selectedUpgrade || maxUpgrade {
-            UpdateText("Upgrade " upgradeLevel " Complete")
-            Sleep(100)
-            hasClicked := false
-            return true
+        SearchW := 120
+        SearchH := 40
+
+        selectedUpgrade := FindText(&foundX, &foundY, outX+115, outY+380, searchW, searchH, 0, 0, upgradePattern)
+        maxUpgrade := FindText(&foundX, &foundY, outX+115, outY+380, searchW, searchH, 0, 0, MaxUnit)
+        
+
+        switch {
+            case selectedUpgrade:
+                UpdateText("Upgrade " upgradeLevel " Complete")
+                Sleep(100)
+                hasClicked := false
+                return true
+            case maxUpgrade:
+                UpdateText("Failed to find upgrade, unit MAXED")
+                Sleep(100)
+                hasClicked := false
+                return true
+            case (A_TickCount - timeout > 60000):
+                return false
         }
     }
 }
@@ -820,10 +840,11 @@ PlaceUnit(x, y, unitslot) {
 
         Send(unitslot)
         Sleep(placementdelay)
-        if (CheckVashMode()) {
-            UpdateText("Vash Placement Detected, selecting Guns")
+        if (VashPlacementCheck()) {
+            UpdateText("Vash placement: selecting Cross")
             CoordMode("Mouse", "Client")
-            ClickV2(250, 280)
+            ;ClickV2(250, 280)
+            ClickV2(500, 280)
             Sleep(150)
         }
         CoordMode("Mouse", "Client")
@@ -838,7 +859,7 @@ PlaceUnit(x, y, unitslot) {
     }
 }
 
-CheckVashMode() {
+VashPlacementCheck() {
     WinGetPos(&winX, &winY, &winW, &winH, roblox)
     if (FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0.1, 0.1, VashMode)) {
         return true
@@ -848,31 +869,31 @@ CheckVashMode() {
 }
 
 InfiniteCheck() {
-global totalWins, nextmap
-mode := GetMode()
+    global totalWins, nextmap
+    mode := GetMode()
 
-if (mode == "Infinite" && Wave15Toggle.Value) {
-    WinGetPos(&winX, &winY, &winW, &winH, roblox)
-    if (FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0, 0, InfWave15)) {
-        UpdateText("Wave 15 reached, restarting...")
-        UpdateText(++totalWins " restarts")
-        CoordMode("Mouse", "Client")
-        Sleep(100)
-        ClickV2(15, 570)  ; Click the cog wheel
-        Sleep(500)
-        MouseMove(490, 385) ; move to restart match/the settings box
-        wiggle()
-        Sleep(750)
-        Scroll(10, "WheelDown", 50) ; scroll down to the restart match button
-        Sleep(750)
-        ClickV2(490, 385) ; click the restart match button
-        Sleep(500)
-        ClickV2(495, 150) ; exit out of settings menu
-        while (FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0, 0, InfWave15)) {
-            Sleep(250)
-        }
-        nextmap++
-        return true
+    if (mode == "Infinite" && Wave15Toggle.Value) {
+        WinGetPos(&winX, &winY, &winW, &winH, roblox)
+        if (FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0, 0, InfWave15)) {
+            UpdateText("Wave 15 reached, restarting...")
+            UpdateText(++totalWins " restarts")
+            CoordMode("Mouse", "Client")
+            Sleep(100)
+            ClickV2(15, 570)  ; Click the cog wheel
+            Sleep(500)
+            MouseMove(490, 385) ; move to restart match/the settings box
+            wiggle()
+            Sleep(750)
+            Scroll(10, "WheelDown", 50) ; scroll down to the restart match button
+            Sleep(750)
+            ClickV2(490, 385) ; click the restart match button
+            Sleep(500)
+            ClickV2(495, 150) ; exit out of settings menu
+            while (FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0, 0, InfWave15)) {
+                Sleep(250)
+            }
+            nextmap++
+            return true
         }
     }
     return false
@@ -910,15 +931,15 @@ RetryCheck() {
     CoordMode("Mouse", "Window")
     CoordMode("Pixel", "Window")
 
-    ; Define detection
-    if Pixel(0x9136F0, 305, 180, 30, 20, 3) {  ; Retry
+    if Pixel(0xAA42FF, 359, 190, 30, 20, 10) {  ; Retry 
         ClickV2(700, 565)
     }
 
     WinGetPos(&winX, &winY, &winW, &winH, roblox)
-    if FindText(&X, &Y, winX, winY+150, winX+winW, winY+winH-150, 0.1, Rare)
-     || FindText(&X, &Y, winX, winY+150, winX+winW, winY+winH-150, 0.1, 0.1, Mythic)
-     || FindText(&X, &Y, winX, winY+150, winX+winW, winY+winH-150, 0.1, 0.1, Legendary)
+    if FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0.1, Rare)
+     || FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0.1, 0.1, Legendary) 
+     || FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0.1, 0.1, Mythic)
+     || FindText(&X, &Y, winX, winY, winX+winW, winY+winH, 0.1, 0.1, Secret)
     {
         loop 3 {
             ClickV2(700, 565)
@@ -927,12 +948,17 @@ RetryCheck() {
     }
 
     ; Looking for red DEFEAT
-    if Pixel(0xFF5959, 250, 310, 30, 20, 10) {  ; Loss
+    ; Window:	329, 312
+    ; Color:	FF4242 (Red=BC Green=37 Blue=37)
+    if Pixel(0xFF4242, 330, 315, 10, 10, 5) {  ; Loss
         runCount++
         return RetryFunctionLoss()
     }
     ; Looking for green VICTORY
-    if Pixel(0x78D731, 250, 310, 30, 20, 10) {  ; Win
+    ; Window:	333, 320
+    ; Client:	325, 289 (default)
+    ; Color:	58BF24 (Red=58 Green=BF Blue=24)
+    if Pixel(0x58BF24, 330, 315, 10, 10, 5) {  ; Win
         runCount++
         return RetryFunctionWin()
     }
@@ -1158,7 +1184,7 @@ DisconnectCheck() {
     return true
 }
 
-LookForIngame(Zoom := true, start := true) {
+LookForIngame(zoom := true, start := true) {
     while (true) {
         if !DisconnectCheck() {
             return false
@@ -1176,7 +1202,7 @@ LookForIngame(Zoom := true, start := true) {
                     UpdateText("lookforingame(): Stock Bar Found")
             }
             
-            if (Zoom) {
+            if (zoom) {
                 UpdateText("Zooming out")
                 Sleep 1000
                 if start {

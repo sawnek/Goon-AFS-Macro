@@ -20,7 +20,7 @@ global PortalType := ""
 ;Update Checker
 global repoOwner := "sawnek"
 global repoName := "Goon-AFS-Macro"
-global Version := "v1.3.4"
+global Version := "v1.3.5"
 
 LoadColorSettings() {
     colorFile := A_ScriptDir "\Settings\Colors.txt"
@@ -116,11 +116,11 @@ DragWindowFunc() {
     if WinExist(roblox) {
         WinGetPos(&X, &Y, &W, &H, MainUI)
         WinActivate(roblox)
-        WinMove(X, Y, 800, 600, roblox)
+        WinMove(X-2, Y, 800, 600, roblox)
     }
 }
 
-MainUI.AddProgress("c0x603b3b x5 y30 h600 w800", 100)
+MainUI.AddProgress("c0x603b3b x5 y30 h600 w800 Background" bgColor " vRobloxHolder", 100)
 WinSetTransColor("0x603b3b 255", MainUI)
 MainUI.SetFont("s12 bold")
 MainUI.Add("Text", "x850 y670 w80 c" textcolor " BackgroundTrans", "Mode:")
@@ -221,6 +221,7 @@ ModeSelectChanged(*) {
             RaidActSelect.Visible := true
             MainUI.Show()
         case "Inferno":
+            NightmareToggle.Visible := true
             LoadGameModeSettings()
             MainUI.Show()
         Default:
